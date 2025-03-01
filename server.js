@@ -24,11 +24,15 @@ const paymentSchema = new mongoose.Schema({
     type: String,
     default: () => {
       const now = new Date();
-      const day = String(now.getDate()).padStart(2, '0');
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const year = now.getFullYear();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
+      // Convert local time to UTC milliseconds
+      const utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
+      // IST is UTC+5:30, so add 5.5 hours in milliseconds
+      const istTime = new Date(utcTime + (5.5 * 60 * 60 * 1000));
+      const day = String(istTime.getDate()).padStart(2, '0');
+      const month = String(istTime.getMonth() + 1).padStart(2, '0');
+      const year = istTime.getFullYear();
+      const hours = String(istTime.getHours()).padStart(2, '0');
+      const minutes = String(istTime.getMinutes()).padStart(2, '0');
       return `${day}/${month}/${year} ${hours}:${minutes}`;
     }
   }
